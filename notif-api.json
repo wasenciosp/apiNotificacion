@@ -1,0 +1,215 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "API Notificaciones",
+    "description" : "API Notificaciones",
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "https://virtserver.swaggerhub.com/wasencios/Notificacion/1.0.0",
+    "description" : "SwaggerHub API Auto Mocking"
+  } ],
+  "basePath" : "/claro/",
+  "tags" : [ {
+    "name" : "admins",
+    "description" : "Secured Admin-only calls"
+  }, {
+    "name" : "developers",
+    "description" : "Operations available to regular developers"
+  } ],
+  "paths" : {
+    "/notificacion/notificarPuntual" : {
+      "post" : {
+        "tags" : [ "admins" ],
+        "summary" : "adds an inventory item",
+        "description" : "Notifica al usuario en forma puntual",
+        "operationId" : "notificarPuntual",
+        "requestBody" : {
+          "description" : "Inventory item to add",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NotificarPuntualReq"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Notificacion generado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Notificacion"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "NotificarPuntualReq" : {
+        "required" : [ "tipo" ],
+        "type" : "object",
+        "properties" : {
+          "source" : {
+            "$ref" : "#/components/schemas/Source"
+          },
+          "plantilla" : {
+            "$ref" : "#/components/schemas/Plantilla"
+          },
+          "canal" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CanalDelivery"
+            }
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/DataNegocio"
+          }
+        },
+        "description" : "Request de la operacion NotificarPuntual"
+      },
+      "CanalDelivery" : {
+        "required" : [ "tipo" ],
+        "type" : "object",
+        "properties" : {
+          "tipo" : {
+            "type" : "string",
+            "example" : "SMS"
+          },
+          "delivery" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Delivery"
+            }
+          },
+          "atributosCanal" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KeyValues"
+            }
+          }
+        },
+        "description" : "Identifica a la plantilla de Notificacion"
+      },
+      "Plantilla" : {
+        "required" : [ "idGrupo" ],
+        "type" : "object",
+        "properties" : {
+          "idGrupo" : {
+            "type" : "string",
+            "example" : "COB"
+          },
+          "idSubGrupo" : {
+            "type" : "string",
+            "example" : "01"
+          }
+        },
+        "description" : "Identifica a la plantilla de Notificacion"
+      },
+      "DataNegocio" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "string",
+            "example" : "{\"recibo\": {\"nombre\": \"Carlos\", \"mes\": \"abril\"}}"
+          }
+        },
+        "description" : "Data de negocio input para la generacion del mensaje"
+      },
+      "Delivery" : {
+        "required" : [ "id", "tipo" ],
+        "type" : "object",
+        "properties" : {
+          "tipo" : {
+            "type" : "string",
+            "example" : "Celular"
+          },
+          "id" : {
+            "type" : "string",
+            "example" : "992832472"
+          },
+          "alias" : {
+            "type" : "string",
+            "example" : "Mi celular"
+          }
+        }
+      },
+      "Source" : {
+        "required" : [ "sistema" ],
+        "type" : "object",
+        "properties" : {
+          "sistema" : {
+            "type" : "string",
+            "example" : "OAC"
+          },
+          "proceso" : {
+            "type" : "string",
+            "example" : "Cobranzas"
+          },
+          "subProceso" : {
+            "type" : "string",
+            "example" : "Emision"
+          },
+          "dateEnvio" : {
+            "type" : "string",
+            "format" : "date-time",
+            "example" : "2016-08-29T09:12:33.001Z"
+          },
+          "trace" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KeyValues"
+            }
+          }
+        }
+      },
+      "Notificacion" : {
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "format" : "uuid",
+            "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          },
+          "status" : {
+            "type" : "string",
+            "example" : "REG"
+          },
+          "date" : {
+            "type" : "string",
+            "format" : "date-time",
+            "example" : "2016-08-29T09:12:33.001Z"
+          }
+        }
+      },
+      "KeyValues" : {
+        "required" : [ "key" ],
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "type" : "string",
+            "example" : "event"
+          },
+          "value" : {
+            "type" : "string",
+            "example" : "001290101012"
+          }
+        },
+        "description" : "Identificador del componente origen"
+      }
+    }
+  }
+}
